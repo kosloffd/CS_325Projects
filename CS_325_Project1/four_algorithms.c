@@ -104,6 +104,15 @@ int readArray(FILE* fp, int arrayToFill[], int* arrayLength)
     return totalNums;
 }
 
+/*  Doubles the size of an array, we probably don't need this in
+    here since we have access to the files they will use to test,
+    but just in case.
+    params:
+        numberArray:    The array to increase
+        arraySize:      The size of the array
+    returns:
+        newArray:       A pointer to the newly increased array
+*/
 int* resizeArray(int numberArray[], int* arraySize)
 {
     int i;
@@ -118,6 +127,12 @@ int* resizeArray(int numberArray[], int* arraySize)
     return newArray;                    // Return a pointer to the new array
 }
 
+/*  Prints out the values from an array to a file
+    params:
+        fp:         The file pointer for the file to which to write
+        array:      The array with the values to write to the file
+        qtyInArray: The number of values in the array
+*/
 void writeArray(FILE* fp, int array[], int qtyInArray)
 {
     fprintf(fp, "[");
@@ -127,6 +142,12 @@ void writeArray(FILE* fp, int array[], int qtyInArray)
     fprintf(fp, "%d]\n", array[j]);
 }
 
+/*  Writes the values of a result struct to a file
+    params:
+        fp:             The file pointer where the values will be written
+        description:    The description/name of the algorithm used to produce the results
+        results:        A result struct containing the values to write
+*/
 void writeToFile(FILE* fp, const char* description, struct result* results)
 {
     fprintf(fp, "%s Method Results:\n", description);
@@ -135,7 +156,15 @@ void writeToFile(FILE* fp, const char* description, struct result* results)
 
 }
 
-
+/*  This function finds the maximum sum of a subarray using the iteration method, i.e.
+    finding the largest sum of the sets (1,1)...(1,n)...(3,n)...(n,n) by using the method
+    of calculating each sum by adding the numbers up to it (sum of 3 to 5 calculated by
+    3+4+5, then 3 to 6 calculated by adding 3+4+5+6, etc.).
+    params:
+        inputArray:     The array of values for which the sum and subarray will be found
+        length:         The number of values in the array
+        results:        The struct which will contain the results of the computation
+*/
 void enumeration(int inputArray[], int length, struct result* results)
 {
     int i, j, k, sum, max, maxLowIdx, maxHiIdx;
@@ -165,9 +194,14 @@ void enumeration(int inputArray[], int length, struct result* results)
         results->maxSum = max;
 }
 
-
-
-
+/*  This function improves upon the enumeration method by keeping a running
+    sum of the previous values and adding the next value to it, rather than
+    calculating the sum up to the previous value again.
+    params:
+        inputArray:     The array of values for which the sum and subarray will be found
+        length:         The number of values in the array
+        results:        The struct which will contain the results of the computation
+*/
 void betterEnumeration(int inputArray[], int length, struct result* results)
 {
     int i, j, max, currentSum, maxLowIdx, maxHiIdx;
@@ -193,7 +227,14 @@ void betterEnumeration(int inputArray[], int length, struct result* results)
     results->maxSum = max;
 }
 
-
+/*  This function calls the maxSubarray function with the initial values for the
+    beginning and end indexes of the passed in array and records the results in
+    a struct result.
+    params:
+        inputArray:     The array of values for which the sum and subarray will be found
+        length:         The number of values in the array
+        results:        The struct which will contain the results of the computation
+*/
 void divideConquer(int inputArray[], int length, struct result* results)
 {
     int i, lowIndex, highIndex, greatestSum;
@@ -207,6 +248,20 @@ void divideConquer(int inputArray[], int length, struct result* results)
 
 }
 
+/*  This function finds the maximum subarray of an array argument by recursively dividing the array.
+    For each recursive call on the stack, the maximum values to the left and right of the dividing
+    point and the maximum value that crosses that midpoint are calculated and the highest of the
+    three values is returned.
+    params:
+        inputArray:     The array of values for which the sum and subarray will be found
+        lowIndex:       The lowest index in the array for which to find a sum, initially 0
+        highIndex:      The highest index in the array for which to find a sum, initially
+                        the length of the array
+        maxLIdx:        A pointer to the integer containing the lowest index value of the max subarray
+                        (This value and the next two are updated within this function)
+        maxLIdx:        A pointer to the integer containing the highest index value of the max subarray
+        highestSum:     A pointer to the integer containing the highest sum found
+*/
 int maxSubarray(int inputArray[], int lowIndex, int highIndex, int* maxLIdx, int* maxHIdx, int* highestSum)
 {
     // Base Case
@@ -255,6 +310,17 @@ int maxSubarray(int inputArray[], int lowIndex, int highIndex, int* maxLIdx, int
     return *highestSum;
 }
 
+/*  This function records the greatest sum of elements in an array from a starting
+    index argument to a lower index argument
+    params:
+        inputArray:     The array of values for which to find the sum
+        endIndex:       The lowest possible index used to find a sum
+        startIndex:     The starting index from which to find a sum
+        maxLowIndex:    A pointer to an integer which will contain the lowest index
+                        that makes the maximum sum
+    returns:
+        maxSum:         The maximum sum found
+*/
 int maxSuffix(int inputArray[], int endIndex, int startIndex, int* maxLowIndex)
 {
     int maxSum, currentSum;
@@ -274,6 +340,18 @@ int maxSuffix(int inputArray[], int endIndex, int startIndex, int* maxLowIndex)
     return maxSum;
 }
 
+
+/*  This function records the greatest sum of elements in an array from a starting
+    index argument to a higher index argument
+    params:
+        inputArray:     The array of values for which to find the sum
+        startIndex:     The starting index from which to find a sum
+        endIndex:       The highest possible index used to find a sum
+        maxHighIndex:   A pointer to an integer which will contain the highest index
+                        that makes the maximum sum
+    returns:
+        maxSum:         The maximum sum found
+*/
 int maxPrefix(int inputArray[], int startIndex, int endIndex, int* maxHighIndex)
 {
     int maxSum, currentSum;
@@ -293,7 +371,14 @@ int maxPrefix(int inputArray[], int startIndex, int endIndex, int* maxHighIndex)
     return maxSum;
 }
 
-
+/*  This algorithm keeps track of the maximum sums found up to each index of an
+    array argument in a new array, then uses the value in the new array to determine
+    the maximum sum of the next index.
+    params:
+        inputArray:     The array of values for which to find the sum
+        length:         The number of values in the inputArray
+        results:        A struct result containing the calculated sum and subarray
+*/
 void linearTime(int inputArray[], int length, struct result* results)
 {
     /* Use saved values of the maximum subarray up to each index,
