@@ -12,9 +12,9 @@
 all: prog
 
 prog: utility.o main.o
-	gcc -g -Wall -std=c99 -o prog main.o utility.o
+	gcc -g -Wall -std=c99 -o prog four_algorithms.o utility.o
 
-main.o: main.c
+four_algorithms.o: four_algorithms.c
 	gcc -g -Wall -std=c99 -c main.c
 
 utility.o: utility.c utility.h
@@ -22,5 +22,5 @@ utility.o: utility.c utility.h
 
 clean:
 	rm utility.o
-	rm main.o
+	rm four_algorithms.o
 	rm prog
