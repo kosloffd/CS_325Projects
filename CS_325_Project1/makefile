@@ -1,4 +1,3 @@
-
 # ===========================================================================
 # Title       : CS325 Project 1 Group 30 - Analysis of Algorithms
 # Members	  : John Fitzpatrick, Dylan York, Jarrad Favre
@@ -11,11 +10,11 @@
 
 all: prog
 
-prog: utility.o main.o
+prog: utility.o four_algorithms.o
 	gcc -g -Wall -std=c99 -o prog four_algorithms.o utility.o
 
 four_algorithms.o: four_algorithms.c
-	gcc -g -Wall -std=c99 -c main.c
+	gcc -g -Wall -std=c99 -c four_algorithms.c
 
 utility.o: utility.c utility.h
 	gcc -g -Wall -std=c99 -c utility.c
