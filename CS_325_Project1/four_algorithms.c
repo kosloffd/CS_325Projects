@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <time.h>
 
 struct result
 {
@@ -37,9 +38,14 @@ int main()
     FILE* fpout = fopen("results.txt", "w");
 
     qtyInArray = readArray(fp, numberArray, &arraySize);
+    int msec = 0;
+    int lineNum = 1;
 
     do
     {
+        printf("\n\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n");
+        printf("Writing computation time results for MSS_TestProblems line #%d\n", lineNum);
+
         writeArray(fpout, numberArray, qtyInArray);
 
         myResults->data = malloc(qtyInArray*sizeof(int));
@@ -48,16 +54,32 @@ int main()
         int* values = numberArray;
         int length = qtyInArray;
 
+        clock_t start = clock(), diff;
         enumeration(values, length, myResults);
+        diff = clock() - start;
+        msec = diff * 1000 / CLOCKS_PER_SEC;
+        printf("enumeration: \t\t%d seconds %d milliseconds\n", msec/1000, msec%1000);
         writeToFile(fpout, "Enumeration", myResults);
 
+        start = clock(), diff;
         betterEnumeration(values, length, myResults);
+        diff = clock() - start;
+        msec = diff * 1000 / CLOCKS_PER_SEC;
+        printf("betterEnumeration: \t%d seconds %d milliseconds\n", msec/1000, msec%1000);
         writeToFile(fpout, "Better Enumeration", myResults);
 
+        start = clock(), diff;
         divideConquer(values, length, myResults);
+        diff = clock() - start;
+        msec = diff * 1000 / CLOCKS_PER_SEC;
+        printf("divideConquer: \t\t%d seconds %d milliseconds\n", msec/1000, msec%1000);
         writeToFile(fpout, "Divide and Conquer", myResults);
 
+        start = clock(), diff;
         linearTime(values, length, myResults);
+        diff = clock() - start;
+        msec = diff * 1000 / CLOCKS_PER_SEC;
+        printf("linearTime: \t\t%d seconds %d milliseconds\n", msec/1000, msec%1000);
         writeToFile(fpout, "Linear Time", myResults);
 
         qtyInArray = readArray(fp, numberArray, &arraySize);
@@ -98,7 +120,7 @@ int readArray(FILE* fp, int arrayToFill[], int* arrayLength)
         if(readChar == ']')
             endOfArray = 1;
         else if(totalNums == *arrayLength)
-                arrayToFill = resizeArray(arrayToFill, arrayLength);
+            arrayToFill = resizeArray(arrayToFill, arrayLength);
     }while(endOfArray == 0);
 
     return totalNums;
@@ -187,11 +209,11 @@ void enumeration(int inputArray[], int length, struct result* results)
         }
     }
 
-     j = 0;
-     for(i = maxLowIdx; i <= maxHiIdx; i++, j++)
-            results->data[j] = inputArray[i];
-        results->dataLength = j;
-        results->maxSum = max;
+    j = 0;
+    for(i = maxLowIdx; i <= maxHiIdx; i++, j++)
+        results->data[j] = inputArray[i];
+    results->dataLength = j;
+    results->maxSum = max;
 }
 
 /*  This function improves upon the enumeration method by keeping a running
@@ -212,9 +234,9 @@ void betterEnumeration(int inputArray[], int length, struct result* results)
         currentSum = inputArray[i];
         if( max < currentSum )
         {
-                max = currentSum;
-                maxLowIdx = i;
-                maxHiIdx = i;
+            max = currentSum;
+            maxLowIdx = i;
+            maxHiIdx = i;
         }
         for(j=i+1; j<length; j++)
         {
@@ -403,11 +425,11 @@ void linearTime(int inputArray[], int length, struct result* results)
             maxSubarray[i] = testSum;
         else
             maxSubarray[i] = inputArray[i];
-            if(inputArray[i] > largestSA)
-            {
-                largestSA = inputArray[i];
-                maxHighIdx = i;
-            }
+        if(inputArray[i] > largestSA)
+        {
+            largestSA = inputArray[i];
+            maxHighIdx = i;
+        }
 
         if(testSum > largestSA)
         {
