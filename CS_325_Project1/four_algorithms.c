@@ -205,10 +205,17 @@ void enumeration(int inputArray[], int length, struct result* results)
 void betterEnumeration(int inputArray[], int length, struct result* results)
 {
     int i, j, max, currentSum, maxLowIdx, maxHiIdx;
-    currentSum = max = maxLowIdx = maxHiIdx = 0;
+    currentSum = maxLowIdx = maxHiIdx = 0;
+    max = inputArray[0];
     for(i=0; i < length; i++)
     {
         currentSum = inputArray[i];
+        if( max < currentSum )
+        {
+                max = currentSum;
+                maxLowIdx = i;
+                maxHiIdx = i;
+        }
         for(j=i+1; j<length; j++)
         {
             currentSum += inputArray[j];
@@ -396,6 +403,11 @@ void linearTime(int inputArray[], int length, struct result* results)
             maxSubarray[i] = testSum;
         else
             maxSubarray[i] = inputArray[i];
+            if(inputArray[i] > largestSA)
+            {
+                largestSA = inputArray[i];
+                maxHighIdx = i;
+            }
 
         if(testSum > largestSA)
         {
@@ -407,10 +419,10 @@ void linearTime(int inputArray[], int length, struct result* results)
     // Find the lowest index
     maxLowIdx = maxHighIdx;
     testSum = inputArray[maxHighIdx];
-    do
+    while(testSum != largestSA)
     {
         testSum += inputArray[--maxLowIdx];
-    }while(testSum != largestSA);
+    }
 
     int j = 0;
     for(i = maxLowIdx; i <= maxHighIdx; i++, j++)
