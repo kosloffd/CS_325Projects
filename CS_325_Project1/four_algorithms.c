@@ -30,12 +30,12 @@ int main()
     assert(myResults != NULL);
 
     int qtyInArray;
-    int arraySize = 20;
+    int arraySize = 1000;
     int* numberArray = malloc(arraySize*sizeof(int));
     assert (numberArray != NULL);
 
-    FILE* fp = fopen("MSS_TestProblems.txt", "r");
-    FILE* fpout = fopen("results.txt", "w");
+    FILE* fp = fopen("MSS_Problems.txt", "r");
+    FILE* fpout = fopen("MSS_Results.txt", "w");
 
     qtyInArray = readArray(fp, numberArray, &arraySize);
     int msec = 0;
